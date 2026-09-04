@@ -1,0 +1,4 @@
+# Uploaded dashboard images are saved here by DashboardImageService.
+# Only the generated file name is stored in SQL (DashboardImageMaster.ImageName) -
+# this folder holds the actual files, served as static content by the API
+# under the relative URL /uploads/dashboard-images/{fileName}.
