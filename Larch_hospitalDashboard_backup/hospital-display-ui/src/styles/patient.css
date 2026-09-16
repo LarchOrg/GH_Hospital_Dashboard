@@ -1,0 +1,587 @@
+/* =====================================================================
+   Staff-facing registration / management screen
+   ===================================================================== */
+
+.patient-form-page {
+  height: calc(100vh - 130px);
+  min-height: 560px;
+  background-color: var(--hd-surface);
+  padding: 22px 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------------------------------------------------------------------
+   Two-column layout: form on the left, search/grid/pagination on the
+   right, so staff never have to scroll the whole page - each column
+   scrolls internally if its own content overflows. Falls back to a
+   single stacked column with normal page scrolling on narrower screens
+   (see media query at the bottom of this file).
+   --------------------------------------------------------------------- */
+.patient-form-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+.patient-form-col {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.patient-grid-col {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.patient-form-card {
+  margin: 0 0 4px 0;
+  border-radius: var(--hd-radius-lg);
+  background-color: var(--hd-surface-panel);
+  border: 1px solid var(--hd-surface-border);
+  box-shadow: 0 14px 40px rgba(15, 35, 65, 0.07);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.patient-form-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(120deg, var(--hd-ink) 0%, #24405e 100%);
+  color: #ffffff;
+  padding: 20px 28px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-family: var(--hd-font-display);
+}
+
+.patient-form-card-header i {
+  color: var(--hd-accent);
+}
+
+.patient-form-card-body {
+  padding: 22px 26px 20px;
+}
+
+.form-section-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hd-accent-dark);
+  margin-bottom: 14px;
+}
+
+.form-section-label--spaced {
+  margin-top: 26px;
+}
+
+.form-label {
+  color: var(--hd-ink);
+  font-size: 0.92rem;
+}
+
+.form-label-hint {
+  color: var(--hd-ink-muted);
+  font-weight: 500;
+  font-size: 0.82rem;
+}
+
+.form-control-lg,
+.form-select-lg {
+  font-size: 1.02rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--hd-radius-sm);
+  border: 1.5px solid var(--hd-surface-border);
+}
+
+.form-control-lg:focus,
+.form-select-lg:focus {
+  border-color: var(--hd-accent);
+  box-shadow: 0 0 0 0.2rem var(--hd-accent-soft);
+}
+
+/* ---------------------------------------------------------------------
+   Criticality selector
+   --------------------------------------------------------------------- */
+.criticality-btn-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.criticality-select-btn {
+  flex: 1;
+  min-width: 118px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--hd-radius-sm);
+  border: 1.5px solid var(--hd-surface-border);
+  background-color: #ffffff;
+  color: var(--hd-ink-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.criticality-select-btn:hover {
+  border-color: var(--hd-accent);
+}
+
+.criticality-select-btn--stable.active {
+  background-color: var(--hd-stable-soft);
+  border-color: var(--hd-stable);
+  color: #15803d;
+}
+
+.criticality-select-btn--critical.active {
+  background-color: var(--hd-critical-soft);
+  border-color: var(--hd-critical);
+  color: #854d0e;
+}
+
+.criticality-select-btn--mostcritical.active {
+  background-color: var(--hd-most-critical-soft);
+  border-color: var(--hd-most-critical);
+  color: #b91c1c;
+}
+
+.criticality-select-btn--deceased.active {
+  background-color: var(--hd-deceased-soft);
+  border-color: var(--hd-deceased);
+  color: #0f0f10;
+}
+
+/* ---------------------------------------------------------------------
+   Ward / discharge status chip (management table + optional form select)
+   --------------------------------------------------------------------- */
+.ward-status-select {
+  cursor: pointer;
+}
+
+.ward-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ward-status-chip--ward {
+  background-color: var(--hd-ward-soft);
+  color: #1d4ed8;
+}
+
+.ward-status-chip--discharged {
+  background-color: var(--hd-discharged-soft);
+  color: #6d28d9;
+}
+
+.ward-status-chip--none {
+  background-color: #eef1f6;
+  color: var(--hd-ink-muted);
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------------- */
+.patient-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.btn-primary-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.72rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, var(--hd-accent), var(--hd-accent-dark));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(23, 184, 166, 0.28);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn-primary-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(23, 184, 166, 0.34);
+}
+
+.btn-primary-pill:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-ghost-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.72rem 1.6rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--hd-surface-border);
+  background: #ffffff;
+  color: var(--hd-ink-muted);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.btn-ghost-pill:hover {
+  border-color: var(--hd-ink-muted);
+  color: var(--hd-ink);
+}
+
+/* ---------------------------------------------------------------------
+   Search toolbar
+   --------------------------------------------------------------------- */
+.patient-table-toolbar {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.patient-search-box {
+  flex: 1 1 220px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid var(--hd-surface-border);
+  border-radius: 999px;
+  padding: 0 18px;
+}
+
+.patient-search-box i {
+  color: var(--hd-ink-muted);
+}
+
+.patient-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0.72rem 0;
+  font-size: 1rem;
+  background: transparent;
+}
+
+/* ---------------------------------------------------------------------
+   Admit-date range filter
+   --------------------------------------------------------------------- */
+.patient-date-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  border: 1.5px solid var(--hd-surface-border);
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.patient-date-filter-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--hd-ink-muted);
+  white-space: nowrap;
+  margin: 0;
+}
+
+.patient-date-input {
+  border: none;
+  background: transparent;
+  padding: 0.35rem 0.2rem;
+  font-size: 0.9rem;
+  color: var(--hd-ink);
+  width: 140px;
+}
+
+.patient-date-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.patient-date-clear-btn {
+  padding: 0.3rem 0.9rem;
+  font-size: 0.8rem;
+}
+
+/* ---------------------------------------------------------------------
+   Management table
+   --------------------------------------------------------------------- */
+.patient-management-table {
+  margin: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--hd-surface-panel);
+  border-radius: var(--hd-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--hd-surface-border);
+  box-shadow: 0 10px 30px rgba(15, 35, 65, 0.06);
+}
+
+.patient-management-table-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--hd-surface-border);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--hd-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.patient-management-table .table-responsive {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.patient-management-table table {
+  margin-bottom: 0;
+}
+
+.patient-management-table thead th {
+  background-color: #f7f9fc;
+  color: var(--hd-ink-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--hd-surface-border);
+  padding: 14px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.patient-management-table tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--hd-surface-border);
+  font-size: 0.95rem;
+  color: var(--hd-ink);
+}
+
+.patient-management-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.patient-management-table tbody tr:hover {
+  background-color: #f7fbfa;
+}
+
+.criticality-badge--sm {
+  font-size: 0.76rem;
+  padding: 4px 11px;
+}
+
+.patient-name-tamil-hint {
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--hd-ink-muted);
+}
+
+.row-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1.5px solid var(--hd-surface-border);
+  background: #ffffff;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.row-action-btn--edit {
+  color: var(--hd-accent-dark);
+}
+
+.row-action-btn--edit:hover {
+  background-color: var(--hd-accent-soft);
+  border-color: var(--hd-accent);
+}
+
+.row-action-btn--delete {
+  color: #c0392b;
+}
+
+.row-action-btn--delete:hover {
+  background-color: var(--hd-critical-soft);
+  border-color: var(--hd-critical);
+}
+
+.table-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--hd-ink-muted);
+}
+
+.table-empty-state i {
+  font-size: 2.4rem;
+  color: var(--hd-surface-border);
+  margin-bottom: 4px;
+}
+
+.table-empty-title {
+  font-weight: 700;
+  color: var(--hd-ink);
+  font-size: 1.05rem;
+}
+
+.table-empty-subtitle {
+  font-size: 0.88rem;
+}
+
+.patient-table-pagination {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--hd-surface-border);
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--hd-surface-border);
+  background: #ffffff;
+  color: var(--hd-ink);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: var(--hd-accent);
+  color: var(--hd-accent-dark);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-page-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1.5px solid var(--hd-surface-border);
+  background: #ffffff;
+  color: var(--hd-ink-muted);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.pagination-page-btn:hover {
+  border-color: var(--hd-accent);
+}
+
+.pagination-page-btn.active {
+  background: var(--hd-accent);
+  border-color: var(--hd-accent);
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------------------------
+   Responsive: below ~1080px there isn't enough width for a comfortable
+   side-by-side form + grid, so stack them and let the page scroll
+   naturally again (this covers tablets and phones).
+   --------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .patient-form-page {
+    height: auto;
+    min-height: calc(100vh - 130px);
+    overflow: visible;
+    padding: 20px 16px 40px 16px;
+  }
+
+  .patient-form-layout {
+    display: block;
+  }
+
+  .patient-form-col {
+    overflow: visible;
+    padding-right: 0;
+    margin-bottom: 22px;
+  }
+
+  .patient-grid-col {
+    display: block;
+  }
+
+  .patient-management-table {
+    display: block;
+  }
+
+  .patient-management-table .table-responsive {
+    overflow-y: visible;
+    max-height: none;
+  }
+
+  .patient-table-toolbar {
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .patient-table-toolbar {
+    flex-direction: column;
+  }
+
+  .patient-table-pagination {
+    flex-direction: column;
+  }
+}

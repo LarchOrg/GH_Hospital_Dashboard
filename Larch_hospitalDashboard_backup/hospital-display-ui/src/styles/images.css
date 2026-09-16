@@ -1,0 +1,251 @@
+/* ===========================================================================
+   Upload Images page (staff-facing) - lets staff upload up to 6 images at
+   once for the public TV dashboard's rotation, and manage what's live.
+   =========================================================================== */
+
+.image-upload-page {
+  min-height: calc(100vh - 130px);
+  background-color: var(--hd-surface);
+  padding: 28px 24px 48px 24px;
+}
+
+.image-upload-layout {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .image-upload-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Upload card
+   --------------------------------------------------------------------- */
+.image-upload-card {
+  border-radius: var(--hd-radius-lg);
+  background-color: var(--hd-surface-panel);
+  border: 1px solid var(--hd-surface-border);
+  box-shadow: 0 14px 40px rgba(15, 35, 65, 0.07);
+  overflow: hidden;
+}
+
+.image-upload-card-header {
+  padding: 22px 26px 16px 26px;
+  border-bottom: 1px solid var(--hd-surface-border);
+}
+
+.image-upload-card-header h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+  font-family: var(--hd-font-display);
+}
+
+.image-upload-subtitle {
+  color: var(--hd-ink-muted);
+  font-size: 0.92rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.image-upload-card-body {
+  padding: 22px 26px 26px 26px;
+}
+
+.image-upload-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 34px 20px;
+  border: 2px dashed var(--hd-surface-border);
+  border-radius: var(--hd-radius-md);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background-color: #fafbfe;
+}
+
+.image-upload-dropzone:hover,
+.image-upload-dropzone.is-dragover {
+  border-color: var(--hd-accent);
+  background-color: rgba(23, 184, 166, 0.06);
+}
+
+.image-upload-dropzone i {
+  font-size: 2.6rem;
+  color: var(--hd-accent);
+  margin-bottom: 6px;
+}
+
+.image-upload-dropzone span {
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--hd-ink);
+}
+
+.image-upload-dropzone small {
+  color: var(--hd-ink-muted);
+  font-size: 0.82rem;
+}
+
+.image-upload-selected-count {
+  margin-top: 16px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--hd-ink);
+}
+
+.image-upload-selected-list {
+  list-style: none;
+  margin: 8px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.image-upload-selected-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  color: var(--hd-ink-muted);
+  background: #f4f6fa;
+  padding: 6px 10px;
+  border-radius: var(--hd-radius-sm);
+  overflow-wrap: anywhere;
+}
+
+.image-upload-selected-list i {
+  color: var(--hd-accent);
+  flex-shrink: 0;
+}
+
+.image-upload-submit-btn {
+  width: 100%;
+  margin-top: 18px;
+}
+
+/* ---------------------------------------------------------------------
+   Gallery of currently-live images
+   --------------------------------------------------------------------- */
+.image-gallery-card {
+  border-radius: var(--hd-radius-lg);
+  background-color: var(--hd-surface-panel);
+  border: 1px solid var(--hd-surface-border);
+  box-shadow: 0 10px 30px rgba(15, 35, 65, 0.06);
+  padding: 22px 26px 26px 26px;
+}
+
+.image-gallery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.image-gallery-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+  font-family: var(--hd-font-display);
+}
+
+.image-gallery-count {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--hd-ink-muted);
+  background: #f4f6fa;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.image-gallery-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--hd-ink-muted);
+}
+
+.image-gallery-empty i {
+  font-size: 2.6rem;
+  opacity: 0.5;
+}
+
+.image-gallery-empty p {
+  max-width: 320px;
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.image-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.image-gallery-item {
+  position: relative;
+  border-radius: var(--hd-radius-md);
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--hd-surface-border);
+  background: #f4f6fa;
+}
+
+.image-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-gallery-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.15s ease;
+}
+
+.image-gallery-item:hover .image-gallery-delete-btn,
+.image-gallery-delete-btn:focus-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.image-gallery-delete-btn:hover {
+  background: #b91c1c;
+}
+
+@media (max-width: 640px) {
+  .image-gallery-delete-btn {
+    opacity: 1;
+    transform: none;
+  }
+}
